@@ -1,24 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'antd/dist/antd.css';
+import React, { useState } from 'react';
+import firebase from 'firebase';
+import LoginPage from './login/LoginPage';
+import MainPage from './Main/MainPage';
+import { store, rrfProps } from './lib/firestore-connect';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import { Provider } from 'react-redux';
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(firebase.auth().currentUser)
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          {currentUser ? <MainPage /> : <LoginPage setCurrentUser={setCurrentUser} />}
+        </ReactReduxFirebaseProvider>
+      </Provider>
     </div>
   );
 }
